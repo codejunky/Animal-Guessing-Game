@@ -1,50 +1,65 @@
 var readlineSync = require("readline-sync");
 
-// Wait for user's response.
-
 let animalFarm = {
   question: "Can it fly?",
-  left: {},
-  right: { value: "Duck" },
+  right: { value: "Dog" },
+  left: { value: "Duck" },
 };
+console.log("Computer: Think of an animal");
 
-function doTheRound() {
-  console.log("Computer: Think of an animal");
-  console.log(`Computer: ${animalFarm["question"]}`);
-
-  let reply = readlineSync.question("Human: ");
-
-  if (reply == "Yes") {
-    console.log(`Yay! I got it. It is ${animalFarm.right.value}`);
-    let wantToPlayAgain = readlineSync.question(
-      "Computer: Do you want to play again?: "
-    );
-    if (wantToPlayAgain == "Yes") {
-      doTheRound();
-    } else {
-      console.log("Have a Good Day!");
-    }
-  } else {
-    console.log("Computer: Oops - looks like I need to improve.");
-    let newAnimal = readlineSync.question(
-      `Computer: What is the animal?: \nHuman: `
-    );
-    animalFarm["left"]["question"] = readlineSync.question(
-      `Computer: What question would distinguish between ${newAnimal} and ${animalFarm.right.value} \nHuman:  `
-    );
-    let newQuestionsAnswer = readlineSync.question(
-      `Computer: For the ${newAnimal} is the Answer Yes or No \nHuman: `
-    );
-    console.log("Computer: Thanks for helping me to improve!");
-    let wantToPlayAgain = readlineSync.question(
-      "Computer: Do you want to play again?: "
-    );
-    if (wantToPlayAgain == "Yes") {
-      doTheRound();
-    } else {
-      console.log("Have a Good Day!");
-    }
+function doYouWantToPlayAgain(){
+  let wantToPlayAgain = readlineSync.question(
+    "Computer: Do you want to play again?: "
+  );
+  if (wantToPlayAgain == "Yes") {
     console.log(animalFarm);
+    doTheRound(animalFarm);
+  } else {
+    console.log("Have a Good Day!");
   }
 }
-doTheRound();
+
+function guessTheAnimal(direction,animalFarmObj){
+  if (animalFarmObj[direction].question) {
+    doTheRound(animalFarmObj[direction]);
+  } else {
+    let newReply = readlineSync.question(
+      `Computer: is it a ${animalFarmObj[direction].value}? \nHuman: `
+    );
+    if (newReply == "Yes") {
+      console.log(`Computer: Yay! I got it. It is ${animalFarmObj[direction].value}`);
+      doYouWantToPlayAgain();
+    } else {
+      let newAnimal = readlineSync.question(
+        `Computer: What is the animal?: \nHuman: `
+      );
+      animalFarmObj[direction]["question"] = readlineSync.question(
+        `Computer: What question would distinguish between ${newAnimal} and ${animalFarmObj[direction].value} \nHuman: `
+      );
+      let newQuestionsAnswer = readlineSync.question(
+        `Computer: For the ${newAnimal} is the Answer Yes or No \nHuman: `
+      );
+      if (newQuestionsAnswer == "Yes") {
+        animalFarmObj[direction].left = { value: newAnimal };
+        animalFarmObj[direction].right = { value: animalFarmObj[direction].value };
+        delete animalFarmObj[direction].value;
+      } else {
+        animalFarmObj[direction].right = { value: newAnimal};
+        animalFarmObj[direction].left = { value: animalFarmObj[direction].value };
+        delete animalFarmObj[direction].value;
+      }
+      doYouWantToPlayAgain();
+    }
+}
+}
+function doTheRound(animalFarmObj) {
+  console.log(`Computer: ${animalFarmObj["question"]}`);
+
+  let reply = readlineSync.question("Human: ");
+  if (reply == "Yes") {
+    guessTheAnimal("left",animalFarmObj);
+  } else if (reply == "No") {
+      guessTheAnimal("right",animalFarmObj);
+  }
+}
+doTheRound(animalFarm);
