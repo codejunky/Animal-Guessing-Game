@@ -5,7 +5,7 @@ const filePath = "./animalFarm.json";
 //To read data from file
 const loadData = (path) => {
   try {
-    return JSON.parse(fs.readFileSync(path, "utf-8"));
+    return fs.readFileSync(path, "utf-8");
   } catch (err) {
     console.error(err);
     return false;
@@ -21,7 +21,8 @@ const writeData = (data, path) => {
   }
 };
 
-let animalFarm = loadData(filePath);
+let animalFarm = JSON.parse(JSON.parse(loadData(filePath)));
+console.log(animalFarm);
 
 console.log("Computer: Think of an animal");
 
@@ -48,8 +49,7 @@ function guessTheAnimal(direction, animalFarmObj) {
       console.log(
         `Computer: Yay! I got it. It is ${animalFarmObj[direction].value}`
       );
-      writeData(JSON.stringify(animalFarmObj), filePath);
-      animalFarmObj = loadData(filePath);
+      writeData(JSON.stringify(animalFarm), filePath);
       doYouWantToPlayAgain();
     } else {
       let newAnimal = readlineSync.question(
@@ -74,8 +74,7 @@ function guessTheAnimal(direction, animalFarmObj) {
         };
         delete animalFarmObj[direction].value;
       }
-      writeData(JSON.stringify(animalFarmObj), filePath);
-      animalFarmObj = loadData(filePath);
+      writeData(JSON.stringify(animalFarm), filePath);
       doYouWantToPlayAgain();
     }
   }

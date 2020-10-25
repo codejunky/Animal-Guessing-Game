@@ -1,1 +1,1 @@
-"{\"question\":\"is it a domestic animal\",\"right\":{\"value\":\"Tiger\"},\"left\":{\"value\":\"Dog\"}}"
+"{\"question\":\"Can it fly?\",\"right\":{\"question\":\"is it wild\",\"left\":{\"value\":\"bear\"},\"right\":{\"value\":\"Dog\"}},\"left\":{\"question\":\"does it bite\",\"left\":{\"question\":\"does it dance\",\"left\":{\"value\":\"peacock\"},\"right\":{\"value\":\"mosquito\"}},\"right\":{\"value\":\"Duck\"}}}"
