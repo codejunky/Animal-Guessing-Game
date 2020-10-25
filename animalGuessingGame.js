@@ -1,10 +1,28 @@
 var readlineSync = require("readline-sync");
+const fs = require("fs");
+const filePath = "./animalFarm.json";
 
-let animalFarm = {
-  question: "Can it fly?",
-  right: { value: "Dog" },
-  left: { value: "Duck" },
+//To read data from file
+const loadData = (path) => {
+  try {
+    return JSON.parse(fs.readFileSync(path, "utf-8"));
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 };
+
+//To write data to the JSON file
+const writeData = (data, path) => {
+  try {
+    fs.writeFileSync(path, JSON.stringify(data));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+let animalFarm = loadData(filePath);
+
 console.log("Computer: Think of an animal");
 
 function doYouWantToPlayAgain() {
@@ -30,6 +48,8 @@ function guessTheAnimal(direction, animalFarmObj) {
       console.log(
         `Computer: Yay! I got it. It is ${animalFarmObj[direction].value}`
       );
+      writeData(JSON.stringify(animalFarmObj), filePath);
+      animalFarmObj = loadData(filePath);
       doYouWantToPlayAgain();
     } else {
       let newAnimal = readlineSync.question(
@@ -54,6 +74,8 @@ function guessTheAnimal(direction, animalFarmObj) {
         };
         delete animalFarmObj[direction].value;
       }
+      writeData(JSON.stringify(animalFarmObj), filePath);
+      animalFarmObj = loadData(filePath);
       doYouWantToPlayAgain();
     }
   }
@@ -68,4 +90,5 @@ function doTheRound(animalFarmObj) {
     guessTheAnimal("right", animalFarmObj);
   }
 }
+console.log("AnimalFarm is:", animalFarm);
 doTheRound(animalFarm);
